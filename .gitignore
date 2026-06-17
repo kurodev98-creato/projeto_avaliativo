@@ -1,0 +1,10 @@
+# Dependências (Nunca enviar para o GitHub)
+node_modules/
+dist/
+.Vite/
+.env
+
+# Arquivos locais do PocketBase (Banco de dados e executável)
+apps/pocketbase/pocketbase.exe
+apps/pocketbase/pb_data/
+apps/pocketbase/pb_migrations/

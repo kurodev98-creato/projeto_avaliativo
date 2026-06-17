@@ -6,19 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minha Loja Monorepo</title>
     
-    <script type="module" crossorigin src="./assets/index.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index.css">
+    <script type="module" crossorigin src="./assets/index-Bv9zL_A1.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-D1oX8zP_.css">
   </head>
   <body>
     <div id="root"></div>
     
     <script type="module">
-      // Garante o carregamento mesmo se o Vite aplicar hashes nos arquivos de produção
-      const scripts = document.querySelectorAll('script[src^="./assets/"]');
-      scripts.forEach(script => {
-        script.onerror = function() {
-          console.log("Ajustando rota do script para contingência...");
-        };
+      window.addEventListener('DOMContentLoaded', () => {
+        const root = document.getElementById('root');
+        if (root && root.children.length === 0) {
+          console.warn("Se a página continuar em branco, verifique se os códigos 'Bv9zL_A1' ou 'D1oX8zP_' no index.html batem com os arquivos reais da sua pasta assets.");
+        }
       });
     </script>
   </body>

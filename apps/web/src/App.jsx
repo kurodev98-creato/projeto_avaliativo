@@ -1,35 +1,79 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-// Importações sem as extensões de arquivo no final
-import ProductDetailPage from './pages/ProductDetailPage';
-import ShoppingCartPage from './pages/ShoppingCartPage';
-
-function App() {
+export default function App() {
   return (
-    // basename configurado para a subpasta do GitHub Pages
-    <BrowserRouter basename="/projeto_avaliativo">
-      <Routes>
-        {/* Rota para a página de detalhes do produto */}
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-        
-        {/* Rota para o carrinho de compras */}
-        <Route path="/cart" element={<ShoppingCartPage />} />
-        
-        {/* Rota padrão (Página Inicial) */}
-        <Route path="/" element={
-          <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'sans-serif' }}>
-            <h1 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Minha Loja Monorepo</h1>
-            <p style={{ color: '#666', marginBottom: '30px' }}>Frontend React e PocketBase interligados com sucesso!</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-              <Link to="/product/exemplo123" style={{ color: '#0070f3', fontWeight: 'bold' }}>Ver Produto de Teste</Link>
-              <Link to="/cart" style={{ color: '#0070f3', fontWeight: 'bold' }}>Ir para o Carrinho 🛒</Link>
+    <div className="container">
+      {/* Header */}
+      <header className="header">
+        <div className="logo">
+          <span className="logo-icon"></span>
+          Minha Loja Monorepo
+        </div>
+        <nav className="nav">
+          <a href="#produtos" className="nav-link">Produtos</a>
+          <a href="#categorias" className="nav-link">Categorias</a>
+          <a href="#sobre" className="nav-link">Sobre Nós</a>
+          <a href="#contato" className="nav-link">Contato</a>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <h1 className="hero-title">
+          Frontend React e PocketBase interligados com sucesso!
+        </h1>
+        <div className="hero-buttons">
+          <a href="#produtos" className="btn btn-primary">
+            Ver Produto de Teste
+          </a>
+          <a href="#carrinho" className="btn btn-secondary">
+            Ir para o Carrinho 🛒
+          </a>
+        </div>
+      </section>
+
+      {/* Main Content Layout */}
+      <main className="main-content">
+        {/* Products Grid */}
+        <div className="products-grid">
+          {[1, 2, 3, 4].map((item) => (
+            <div key={item} className="card">
+              <div className="card-image-placeholder"></div>
+              <div className="card-title-placeholder"></div>
+              <div className="card-line-placeholder"></div>
+              <div className="card-line-placeholder" style={{ width: '50%' }}></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Features Sidebar */}
+        <aside className="features-panel">
+          <h2 className="features-title">Features</h2>
+          <div className="features-list">
+            <div className="feature-item">
+              <div className="feature-icon">⚡</div>
+              <div className="feature-info">
+                <h4>Performance</h4>
+                <p>Performance rápida e moderna para o produto.</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">🛡️</div>
+              <div className="feature-info">
+                <h4>Segurança</h4>
+                <p>Arquitetura segura protegendo seus dados.</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">🚀</div>
+              <div className="feature-info">
+                <h4>Escalabilidade</h4>
+                <p>Estrutura monorepo pronta para crescer.</p>
+              </div>
             </div>
           </div>
-        } />
-      </Routes>
-    </BrowserRouter>
+        </aside>
+      </main>
+    </div>
   );
 }
-
-export default App;

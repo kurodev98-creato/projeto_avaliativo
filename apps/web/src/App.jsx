@@ -38,6 +38,16 @@ const PRODUCTS = [
 export default function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('pix');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    address: '',
+  });
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -74,6 +84,28 @@ export default function App() {
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSimulatePurchase = (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    // Simula tempo de resposta do servidor/gateway de pagamento
+    setTimeout(() => {
+      setIsProcessing(false);
+      setOrderSuccess(true);
+      setCart([]);
+    }, 2000);
+  };
+
+  const closeCheckout = () => {
+    setIsCheckoutOpen(false);
+    setOrderSuccess(false);
+    setFormData({ name: '', email: '', address: '' });
+  };
 
   return (
     <div className="container">
@@ -209,7 +241,11 @@ export default function App() {
                       <span>Total:</span>
                       <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                     </div>
-                    <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                    <button 
+                      className="btn btn-primary" 
+                      onClick={() => setIsCheckoutOpen(true)}
+                      style={{ width: '100%', justifyContent: 'center' }}
+                    >
                       Finalizar Compra
                     </button>
                   </div>
@@ -246,6 +282,140 @@ export default function App() {
           )}
         </aside>
       </main>
+
+      {/* Modal de Simulação de Checkout */}
+      {isCheckoutOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: '#1e293b',
+            border: '1px solid #334155',
+            borderRadius: '0.75rem',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '100%',
+            color: '#fff',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
+          }}>
+            {!orderSuccess ? (
+              <form onSubmit={handleSimulatePurchase}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Simulador de Checkout</h3>
+                  <button type="button" onClick={closeCheckout} style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.25rem', cursor: 'pointer' }}>✕</button>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Nome Completo</label>
+                  <input 
+                    type="text" 
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Seu nome"
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '0.375rem', background: '#0f172a', border: '1px solid #334155', color: '#fff' }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.25rem' }}>E-mail</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="seuemail@exemplo.com"
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '0.375rem', background: '#0f172a', border: '1px solid #334155', color: '#fff' }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Endereço de Entrega</label>
+                  <input 
+                    type="text" 
+                    name="address"
+                    required
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder="Rua, número e cidade"
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '0.375rem', background: '#0f172a', border: '1px solid #334155', color: '#fff' }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.5rem' }}>Forma de Pagamento</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                    {['pix', 'card', 'boleto'].map((method) => (
+                      <button
+                        key={method}
+                        type="button"
+                        onClick={() => setPaymentMethod(method)}
+                        style={{
+                          padding: '0.5rem',
+                          borderRadius: '0.375rem',
+                          border: paymentMethod === method ? '2px solid #38bdf8' : '1px solid #334155',
+                          background: paymentMethod === method ? '#0284c7' : '#0f172a',
+                          color: '#fff',
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                          textTransform: 'uppercase'
+                        }}
+                      >
+                        {method}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ borderTop: '1px solid #334155', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <span style={{ fontSize: '1rem', color: '#cbd5e1' }}>Total a pagar:</span>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#38bdf8' }}>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={isProcessing}
+                  className="btn btn-primary" 
+                  style={{ width: '100%', justifyContent: 'center', padding: '0.75rem' }}
+                >
+                  {isProcessing ? 'Processando Pagamento...' : 'Confirmar e Pagar'}
+                </button>
+              </form>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#38bdf8', marginBottom: '0.5rem' }}>Pedido Confirmado!</h3>
+                <p style={{ color: '#cbd5e1', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                  Obrigado, <strong>{formData.name}</strong>! Enviamos a confirmação para <strong>{formData.email}</strong>.
+                </p>
+                <div style={{ background: '#0f172a', padding: '1rem', borderRadius: '0.5rem', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
+                  Código do Pedido: <strong style={{ color: '#fff' }}>#{Math.floor(100000 + Math.random() * 900000)}</strong>
+                </div>
+                <button 
+                  onClick={closeCheckout} 
+                  className="btn btn-primary"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  Voltar à Loja
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
